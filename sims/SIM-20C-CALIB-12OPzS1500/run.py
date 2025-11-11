@@ -62,8 +62,15 @@ def run_calibration(base_dir: Path, cfg: Dict) -> Dict[str, float]:
         soc_init=battery["soc_init"],
         temperature_c=20.0,
         max_rel_error=cal_cfg["max_rel_error"],
+        family_nominals_path=(base_dir / cal_cfg.get("family_nominals_csv")) if cal_cfg.get("family_nominals_csv") else None,
+        multi_rate_path=(base_dir / cal_cfg.get("multi_rate_csv")) if cal_cfg.get("multi_rate_csv") else None,
+        battery_model_name=battery.get("model_name"),
     )
     write_table(calib.error_table, tables_dir / "calib_error.csv", cfg["output"]["tables_precision"])
+    if calib.family_error is not None:
+        write_table(calib.family_error, tables_dir / "family_nominal_error.csv", cfg["output"]["tables_precision"])
+    if calib.multi_rate_error is not None:
+        write_table(calib.multi_rate_error, tables_dir / "multi_rate_error.csv", cfg["output"]["tables_precision"])
     params_path = base_dir / CALIB_PARAMS_JSON
     params_path.parent.mkdir(parents=True, exist_ok=True)
     params_path.write_text(json.dumps(calib.params, indent=2), encoding="utf-8")
@@ -87,6 +94,9 @@ def run_simulation(base_dir: Path, cfg: Dict, params: Dict[str, float]) -> None:
         temperatures=cfg["scenarios"]["temperatures_C"],
         aging_map=cfg["scenarios"]["aging_fcap"],
         Q_rated=battery["Q_rated_Ah"],
+        capacity_targets={
+            int(k): v for k, v in (cfg["scenarios"].get("rates_capacity_Ah") or {}).items()
+        },
     )
     for scn in scenarios:
         if scn.name == "C5":

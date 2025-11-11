@@ -1,0 +1,5 @@
+model,rate_h,V_cut,capacity_target,capacity_sim,rel_err,pass
+12 OPzS 1500,10,1.8,1610,1610.0,0.0,True
+12 OPzS 1500,5,1.77,1400,1400.0,0.0,True
+12 OPzS 1500,3,1.75,1197,1197.0,0.0,True
+12 OPzS 1500,1,1.67,784,784.0,0.0,True
