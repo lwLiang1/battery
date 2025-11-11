@@ -1,0 +1,42 @@
+battery:
+  chemistry: "lead-acid-2V"
+  Q_rated_Ah: 1610
+  V_cut_V: 1.80
+  soc_init: 1.0
+  sg_20C: "1.24 g/ml"
+model:
+  type: "thevenin"
+  params_init:
+    R0: 0.00015
+    R1: 0.0005
+    C1: 6000
+    ocv_poly: [2.12, -0.3, 0.6, -0.45, 2.05]
+calibration_20C:
+  use_vendor_data: true
+  curves:
+    - { name: "C10", V_cut: 1.80, hours: 10, capacity_Ah: 1610 }
+    - { name: "C5",  V_cut: 1.77, hours: 5,  capacity_Ah: 1400 }
+  max_rel_error: 0.02
+scenarios:
+  temperatures_C: [20]
+  aging_fcap: { new: 1.0 }
+  c_hours: [10,5]
+  emergency:
+    I_peak_A: 1200
+    I_hold_A: 800
+    duration_min: 60
+tolerances:
+  enable: false
+  tol_Q_pct:  [1,2,3]
+  tol_R0_pct: [2,5,10]
+  tol_tau_pct: [5,10]
+equivalence:
+  delta_capacity: 0.02
+  delta_energy:   0.02
+  delta_Vmin:     0.03
+  param_consistency_pct: 0.05
+output:
+  save_png: true
+  save_pdf: true
+  tables_precision: 4
+  random_seed: 2025
